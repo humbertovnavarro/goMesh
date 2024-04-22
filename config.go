@@ -562,7 +562,7 @@ func sendAdminMessage(adminPacket pb.AdminMessage, r *Radio) error {
 		return err
 	}
 
-	if err := r.sendPacket(packet); err != nil {
+	if err := r.SendPacket(packet); err != nil {
 		return err
 	}
 

@@ -57,8 +57,11 @@ func (s *streamer) Init(addr string) error {
 func (s *streamer) Write(p []byte) error {
 
 	if s.isTCP {
-		s.netPort.SetReadDeadline(time.Now().Add(1 * time.Second))
-		_, err := s.netPort.Write(p)
+		err := s.netPort.SetReadDeadline(time.Now().Add(1 * time.Second))
+		if err != nil {
+			return err
+		}
+		_, err = s.netPort.Write(p)
 		if err != nil {
 			return err
 		}
@@ -77,8 +80,11 @@ func (s *streamer) Write(p []byte) error {
 func (s *streamer) Read(p []byte) error {
 
 	if s.isTCP {
-		s.netPort.SetReadDeadline(time.Now().Add(2 * time.Second))
-		_, err := s.netPort.Read(p)
+		err := s.netPort.SetReadDeadline(time.Now().Add(2 * time.Second))
+		if err != nil {
+			return err
+		}
+		_, err = s.netPort.Read(p)
 		if err != nil {
 			return err
 		}

@@ -6,7 +6,6 @@ import (
 	"io"
 	"math/rand"
 	"os"
-	"time"
 
 	pb "github.com/lmatte7/gomesh/github.com/meshtastic/gomeshproto"
 	"google.golang.org/protobuf/proto"
@@ -39,8 +38,8 @@ func (r *Radio) Init(port string) error {
 	return nil
 }
 
-// sendPacket takes a protbuf packet, construct the appropriate header and sends it to the radio
-func (r *Radio) sendPacket(protobufPacket []byte) (err error) {
+// SendPacket takes a protbuf packet, construct the appropriate header and sends it to the radio
+func (r *Radio) SendPacket(protobufPacket []byte) (err error) {
 
 	packageLength := len(string(protobufPacket))
 
@@ -170,7 +169,10 @@ func (r *Radio) getNodeNum() (nodeNum uint32, err error) {
 		return 0, err
 	}
 
-	r.sendPacket(out)
+	err = r.SendPacket(out)
+	if err != nil {
+		return 0, err
+	}
 
 	radioResponses, err := r.ReadResponse(true)
 	if err != nil {
@@ -198,7 +200,10 @@ func (r *Radio) GetRadioInfo() (radioResponses []*pb.FromRadio, err error) {
 		return nil, err
 	}
 
-	r.sendPacket(out)
+	err = r.SendPacket(out)
+	if err != nil {
+		return nil, err
+	}
 
 	radioResponses, err = r.ReadResponse(true)
 	if err != nil {
@@ -231,7 +236,6 @@ func (r *Radio) SendTextMessage(message string, to int64) error {
 		return errors.New("message too large")
 	}
 
-	rand.Seed(time.Now().UnixNano())
 	packetID := rand.Intn(2386828-1) + 1
 
 	radioMessage := pb.ToRadio{
@@ -255,7 +259,7 @@ func (r *Radio) SendTextMessage(message string, to int64) error {
 		return err
 	}
 
-	if err := r.sendPacket(out); err != nil {
+	if err := r.SendPacket(out); err != nil {
 		return err
 	}
 
@@ -293,7 +297,7 @@ func (r *Radio) SetRadioOwner(name string) error {
 		return err
 	}
 
-	if err := r.sendPacket(packet); err != nil {
+	if err := r.SendPacket(packet); err != nil {
 		return err
 	}
 
@@ -349,7 +353,7 @@ func (r *Radio) SetModemMode(mode string) error {
 		return err
 	}
 
-	if err := r.sendPacket(packet); err != nil {
+	if err := r.SendPacket(packet); err != nil {
 		return err
 	}
 
@@ -398,7 +402,7 @@ func (r *Radio) SetLocation(lat float64, long float64, alt int32) error {
 		return err
 	}
 
-	if err := r.sendPacket(packet); err != nil {
+	if err := r.SendPacket(packet); err != nil {
 		return err
 	}
 
@@ -426,7 +430,7 @@ func (r *Radio) FactoryRest() error {
 		return err
 	}
 
-	if err := r.sendPacket(packet); err != nil {
+	if err := r.SendPacket(packet); err != nil {
 		return err
 	}
 

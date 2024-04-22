@@ -1,9 +1,8 @@
 package gomesh
 
 import (
-	"math/rand"
+	"crypto/rand"
 	"strconv"
-	"time"
 )
 
 // convPSK converts user input into a preset value for the PSK
@@ -31,8 +30,9 @@ func convPSK(param string) (psk []byte, err error) {
 func genPSK256() []byte {
 
 	token := make([]byte, 32)
-	rand.Seed(time.Now().UnixNano())
-	rand.Read(token)
-
+	_, err := rand.Read(token)
+	if err != nil {
+		panic(err)
+	}
 	return token
 }
