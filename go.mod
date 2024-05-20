@@ -1,4 +1,4 @@
-module github.com/lmatte7/gomesh
+module github.com/humbertovnavarro/goMesh
 
 go 1.22
 
